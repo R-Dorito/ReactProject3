@@ -18,8 +18,12 @@ export default class App extends Component {
             <div>
                 <NavMenu />
                 <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route path={Paths.Food} component={FoodPage} />
+                    <Route exact path="/">
+                        <Home />
+                    </Route>
+                    <Route path={Paths.Food}>
+                        <FoodPage />
+                    </Route>
                 </Switch>
                 <Footer />
             </div>
@@ -30,8 +34,12 @@ export default class App extends Component {
 const FoodPage = () => {
     return (
         <Switch>
-            <Route exact path={Paths.FoodChicken} component={ChickenPage} />
-            <Route exact path={Paths.FoodLamb} component={LambPage} />
+            <Route exact path={Paths.FoodChicken}>
+                <ChickenPage />
+            </Route>
+            <Route exact path={Paths.FoodLamb}>
+                <LambPage />
+            </Route>
         </Switch>
     );
 };

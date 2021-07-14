@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { CachePolicies, useFetch } from "use-http";
+
 import {
     PageBody,
     TitleContainer,
@@ -10,7 +12,36 @@ import {
 } from "./StyledContentDisplayPage.jsx";
 import stockImage from "../../../src/Images/stockImage.jpg";
 
-export function ChickenPage() {
+interface WebContent {
+    id?: string;
+    title: string;
+    content: string;
+}
+
+export const ChickenPage = () => {
+    const { get, post, response, loading, error } = useFetch(
+        "http://localhost:5000/api/WebContent",
+        {
+            mode: "no-cors",
+            cachePolicy: CachePolicies.NO_CACHE,
+        }
+    );
+
+    const [contentItems, setContentItems] = useState<WebContent[]>([]);
+
+    async function loadData() {
+        await get("/").then((loadedData) => setContentItems(loadedData));
+    }
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const newKebab: WebContent = {
+        title: "test",
+        content: "contest",
+    };
+
     return (
         <PageBody>
             <TitleContainer>
@@ -22,6 +53,38 @@ export function ChickenPage() {
             </TitleContainer>
 
             <Content>
+                <ContentParagraph>
+                    <button
+                        onClick={() => {
+                            post("", newKebab);
+                        }}
+                    >
+                        Add new thing
+                    </button>
+                    {contentItems.map((item) => (
+                        <div>{item.title}</div>
+                    ))}
+                </ContentParagraph>
+            </Content>
+        </PageBody>
+    );
+};
+
+/*
+ *            <button
+                onClick={() =>
+                    get().then((data) => {
+                        setContentItems({
+                            title: data.title,
+                            content: data.content,
+                        });
+                    })
+                }
+            >
+                kebeabs
+            </button>
+ *
+ * <Content style={{ display: "none" }}>
                 <ContentParagraph>
                     When I make my saurkraut, I like to think about this story I
                     have read a little while ago about e-coli. The story is
@@ -41,10 +104,8 @@ export function ChickenPage() {
                     happening.
                 </ContentParagraph>
             </Content>
-        </PageBody>
-    );
-}
-
+ * 
+*/
 export function LambPage() {
     return (
         <>

@@ -8,6 +8,5 @@ export const FooterContainer = styled.div`
 
 export const FooterGridContainer = styled.div`
     display: grid;
-    grid-template-areas: ;
     grid-gap: 10px;
 `;

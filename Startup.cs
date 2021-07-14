@@ -1,10 +1,15 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using FermiParadox.Data;
+using FermiParadox.Model;
+using Microsoft.Extensions.Options;
+using FermiParadox.Services;
 
 namespace FermiParadox
 {
@@ -28,6 +33,21 @@ namespace FermiParadox
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.Configure<WebContentSettings>(Configuration.GetSection(nameof(WebContentSettings)));
+            services.AddSingleton<IWebContentSettings>(x => x.GetRequiredService<IOptions<WebContentSettings>>().Value);
+            services.AddSingleton<WebContentService>();
+
+            //services.AddDbContext<FermiParadoxContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("FermiParadoxContext")));
+
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +68,7 @@ namespace FermiParadox
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseCors("MyPolicy");
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
